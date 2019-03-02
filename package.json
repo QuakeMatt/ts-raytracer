@@ -1,0 +1,23 @@
+{
+  "name": "ts-raytracer",
+  "version": "1.0.0",
+  "description": "TypeScript raytracer",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode=development",
+    "watch": "webpack --mode=development --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Matthew Lawrence-Stubley",
+    "email": "quakematt@outlook.com"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.3333",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  }
+}
