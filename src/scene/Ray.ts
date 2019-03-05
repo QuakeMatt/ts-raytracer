@@ -7,7 +7,7 @@ export class Ray {
 
     constructor(origin: Vector3, direction: Vector3) {
         this.origin = origin;
-        this.direction = direction;
+        this.direction = direction.normalize();
     }
 
 }

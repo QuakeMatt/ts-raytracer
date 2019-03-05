@@ -5,6 +5,7 @@ import { Scene } from "./scene/Scene";
 import { Sphere } from "./object/Sphere";
 import { Vector3 } from "./math/Vector3";
 import { Viewport } from "./render/Viewport";
+import { Plane } from "./object/Plane";
 
 const CANVAS_WIDTH = 1024;
 const CANVAS_HEIGHT = 1024;
@@ -29,6 +30,10 @@ const camera = new Camera(scene);
 
 scene.addObject(
     new Sphere(new Vector3(2.0, 1.0, 30.0), 10.0)
+);
+
+scene.addObject(
+    new Plane(new Vector3(0.0, -10.0, 0.0), new Vector3(0.0, 1.0, 0.0))
 );
 
 scene.addLight(
