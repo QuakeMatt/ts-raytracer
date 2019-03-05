@@ -38,6 +38,7 @@ export class Plane implements SceneObject {
             object: this,
             point: point,
             normal: normal,
+            distance: intersectionDistance,
         };
 
     }

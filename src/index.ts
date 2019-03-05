@@ -29,6 +29,10 @@ const scene = new Scene();
 const camera = new Camera(scene);
 
 scene.addObject(
+    new Sphere(new Vector3(-11.0, -4.0, 45.0), 5.0)
+);
+
+scene.addObject(
     new Sphere(new Vector3(2.0, 1.0, 30.0), 10.0)
 );
 

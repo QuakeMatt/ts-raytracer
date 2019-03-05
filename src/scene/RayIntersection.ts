@@ -7,4 +7,5 @@ export interface RayIntersection {
     object: SceneObject;
     point: Vector3;
     normal: Vector3;
+    distance: number;
 }

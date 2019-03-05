@@ -23,17 +23,20 @@ export class Scene {
 
     cast(ray: Ray): RayIntersection | null {
 
+        let bestHit: RayIntersection | null = null;
+
         for (let i = 0, ix = this.objects.length; i < ix; i++) {
 
             let object = this.objects[i];
             let objectHit = object.cast(ray);
-            if (objectHit) {
-                return objectHit;
+
+            if (objectHit && (bestHit == null || objectHit.distance < bestHit.distance)) {
+                bestHit = objectHit;
             }
 
         }
 
-        return null;
+        return bestHit;
 
     }
 

@@ -42,6 +42,7 @@ export class Sphere implements SceneObject {
             object: this,
             point: point,
             normal: normal,
+            distance: distanceToImpact,
         };
 
     }
