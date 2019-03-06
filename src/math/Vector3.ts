@@ -59,4 +59,11 @@ export class Vector3 {
         );
     }
 
+    reflect(vec: Vector3) {
+        let direction = this.normalize();
+        let normal = vec.normalize();
+        let offset = normal.multiply(normal.dot(direction) * -2);
+        return direction.add(offset);
+    }
+
 }

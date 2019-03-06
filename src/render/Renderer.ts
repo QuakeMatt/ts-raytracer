@@ -64,10 +64,25 @@ export class Renderer {
 
     }
 
-    castRay(ray: Ray, scene: Scene, accumulator: Accumulator) {
+    castRay(ray: Ray, scene: Scene, accumulator: Accumulator, weight: number = 1.0, limit: number = 10) {
+
+        if (limit < 1) {
+            return;
+        }
 
         let hit = scene.cast(ray);
         if (hit == null) {
+            return;
+        }
+
+        if (hit.object.material.reflectiveness > 0.0) {
+            let reflectiveness = hit.object.material.reflectiveness * weight;
+            let reflected = new Ray(hit.point, ray.direction.reflect(hit.normal));
+            this.castRay(reflected, scene, accumulator, reflectiveness, limit - 1);
+            weight -= reflectiveness;
+        }
+
+        if (weight < 0.000001) {
             return;
         }
 
@@ -80,7 +95,7 @@ export class Renderer {
             let lightHit = scene.cast(lightRay);
             if (lightHit == null) {
                 let diffuse = hit.object.material.diffuse || { r: 1.0, g: 1.0, b: 1.0 };
-                let strength = hit.normal.dot(lightRay.direction.normalize());
+                let strength = hit.normal.dot(lightRay.direction.normalize()) * weight;
                 accumulator.r += diffuse.r * strength;
                 accumulator.g += diffuse.g * strength;
                 accumulator.b += diffuse.b * strength;
