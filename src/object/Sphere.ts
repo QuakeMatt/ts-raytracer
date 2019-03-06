@@ -1,16 +1,19 @@
+import { Material } from "../material/Material";
 import { Ray } from "../scene/Ray";
 import { RayIntersection } from "../scene/RayIntersection";
-import { SceneObject } from "../scene/SceneObject";
+import { Renderable } from "../scene/Renderable";
 import { Vector3 } from "../math/Vector3";
 
-export class Sphere implements SceneObject {
+export class Sphere implements Renderable {
 
     origin: Vector3;
     radius: number;
+    material: Material;
 
-    constructor(origin: Vector3, radius: number) {
+    constructor(origin: Vector3, radius: number, material: Material | null = null) {
         this.origin = origin;
         this.radius = radius;
+        this.material = material || Material.default();
     }
 
     cast(ray: Ray): RayIntersection | null {

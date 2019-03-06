@@ -79,10 +79,11 @@ export class Renderer {
 
             let lightHit = scene.cast(lightRay);
             if (lightHit == null) {
+                let diffuse = hit.object.material.diffuse || { r: 1.0, g: 1.0, b: 1.0 };
                 let strength = hit.normal.dot(lightRay.direction.normalize());
-                accumulator.r += strength;
-                accumulator.g += strength;
-                accumulator.b += strength;
+                accumulator.r += diffuse.r * strength;
+                accumulator.g += diffuse.g * strength;
+                accumulator.b += diffuse.b * strength;
             }
 
         }

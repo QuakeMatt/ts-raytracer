@@ -1,16 +1,19 @@
-import { SceneObject } from "../scene/SceneObject";
-import { Vector3 } from "../math/Vector3";
 import { Ray } from "../scene/Ray";
 import { RayIntersection } from "../scene/RayIntersection";
+import { Renderable } from "../scene/Renderable";
+import { Vector3 } from "../math/Vector3";
+import { Material } from "../material/Material";
 
-export class Plane implements SceneObject {
+export class Plane implements Renderable {
 
     origin: Vector3;
     normal: Vector3;
+    material: Material;
 
-    constructor(origin: Vector3, normal: Vector3) {
+    constructor(origin: Vector3, normal: Vector3, material: Material | null = null) {
         this.origin = origin;
         this.normal = normal.normalize();
+        this.material = material || Material.default();
     }
 
     cast(ray: Ray): RayIntersection | null {

@@ -1,10 +1,10 @@
 import { Ray } from "./Ray";
-import { SceneObject } from "./SceneObject";
+import { Renderable } from "./Renderable";
 import { Vector3 } from "../math/Vector3";
 
 export interface RayIntersection {
     ray: Ray;
-    object: SceneObject;
+    object: Renderable;
     point: Vector3;
     normal: Vector3;
     distance: number;

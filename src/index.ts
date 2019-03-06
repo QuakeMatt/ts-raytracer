@@ -6,6 +6,7 @@ import { Sphere } from "./object/Sphere";
 import { Vector3 } from "./math/Vector3";
 import { Viewport } from "./render/Viewport";
 import { Plane } from "./object/Plane";
+import { Material } from "./material/Material";
 
 const CANVAS_WIDTH = 1024;
 const CANVAS_HEIGHT = 1024;
@@ -28,8 +29,11 @@ if (draw == null) { throw new Error('Could not get canvas context'); }
 const scene = new Scene();
 const camera = new Camera(scene);
 
+let red = new Material();
+red.diffuse = { r: 1.0, g: 0.2, b: 0.2 };
+
 scene.addObject(
-    new Sphere(new Vector3(-11.0, -4.0, 45.0), 5.0)
+    new Sphere(new Vector3(-11.0, -4.0, 45.0), 5.0, red)
 );
 
 scene.addObject(
