@@ -1,5 +1,6 @@
 import { Accumulator } from "./Accumulator";
 import { Camera } from "../scene/Camera";
+import { Color } from "../material/Color";
 import { Ray } from "../scene/Ray";
 import { Scene } from "../scene/Scene";
 import { Viewport } from "./Viewport";
@@ -94,8 +95,8 @@ export class Renderer {
 
             let lightHit = scene.cast(lightRay);
             if (lightHit == null) {
-                let diffuse = hit.object.material.diffuse || { r: 1.0, g: 1.0, b: 1.0 };
-                let strength = hit.normal.dot(lightRay.direction.normalize()) * weight;
+                let diffuse = hit.object.material.diffuse || Color.white;
+                let strength = hit.normal.dot(lightRay.direction) * weight;
                 accumulator.r += diffuse.r * strength;
                 accumulator.g += diffuse.g * strength;
                 accumulator.b += diffuse.b * strength;

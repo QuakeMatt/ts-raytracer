@@ -1,8 +1,8 @@
 export class Vector3 {
 
-    x: number;
-    y: number;
-    z: number;
+    readonly x: number;
+    readonly y: number;
+    readonly z: number;
 
     constructor(x: number, y: number, z: number) {
         this.x = x;
@@ -59,11 +59,10 @@ export class Vector3 {
         );
     }
 
-    reflect(vec: Vector3) {
+    reflect(normal: Vector3) {
         let direction = this.normalize();
-        let normal = vec.normalize();
-        let offset = normal.multiply(normal.dot(direction) * -2);
-        return direction.add(offset);
+        let offset = normal.multiply(normal.dot(direction) * 2.0);
+        return direction.sub(offset);
     }
 
 }

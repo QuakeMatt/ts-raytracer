@@ -1,15 +1,40 @@
 import { Color } from "./Color";
 
+class MaterialBuilder {
+
+    diffuse: Color = Color.white;
+    reflectiveness: number = 0.0;
+
+    withDiffuse(color: Color) {
+        this.diffuse = color;
+        return this;
+    }
+
+    withReflectiveness(reflectiveness: number) {
+        this.reflectiveness = reflectiveness;
+        return this;
+    }
+
+    build() {
+        return new Material(this);
+    }
+
+}
+
 export class Material {
 
-    diffuse: Color | null;
+    readonly diffuse: Color;
+    readonly reflectiveness: number;
 
-    reflectiveness: number = -1.0;
-
-    static default() {
-        let material = new Material();
-        material.diffuse = { r: 1.0, g: 1.0, b: 1.0 };
-        return material;
+    constructor(builder: MaterialBuilder) {
+        this.diffuse = builder.diffuse;
+        this.reflectiveness = builder.reflectiveness;
     }
+
+    static builder() {
+        return new MaterialBuilder();
+    }
+
+    static default = Material.builder().build();
 
 }

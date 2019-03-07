@@ -6,14 +6,14 @@ import { Material } from "../material/Material";
 
 export class Plane implements Renderable {
 
-    origin: Vector3;
-    normal: Vector3;
-    material: Material;
+    readonly origin: Vector3;
+    readonly normal: Vector3;
+    readonly material: Material;
 
-    constructor(origin: Vector3, normal: Vector3, material: Material | null = null) {
+    constructor(origin: Vector3, normal: Vector3, material: Material = Material.default) {
         this.origin = origin;
         this.normal = normal.normalize();
-        this.material = material || Material.default();
+        this.material = material;
     }
 
     cast(ray: Ray): RayIntersection | null {

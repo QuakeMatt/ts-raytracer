@@ -6,20 +6,20 @@ import { Vector3 } from "../math/Vector3";
 
 export class Sphere implements Renderable {
 
-    origin: Vector3;
-    radius: number;
-    material: Material;
+    readonly origin: Vector3;
+    readonly radius: number;
+    readonly material: Material;
 
-    constructor(origin: Vector3, radius: number, material: Material | null = null) {
+    constructor(origin: Vector3, radius: number, material: Material = Material.default) {
         this.origin = origin;
         this.radius = radius;
-        this.material = material || Material.default();
+        this.material = material;
     }
 
     cast(ray: Ray): RayIntersection | null {
 
         let sphereOffset = this.origin.sub(ray.origin);
-        let rayDirection = ray.direction.normalize();
+        let rayDirection = ray.direction;
         let rayDistanceToTangent = sphereOffset.dot(rayDirection);
         let rayDistanceToCenterSq = sphereOffset.dot(sphereOffset);
         let rayDistanceToTangentSq = rayDistanceToTangent * rayDistanceToTangent;

@@ -1,4 +1,5 @@
 import { Camera } from "./scene/Camera";
+import { Color } from "./material/Color";
 import { Light } from "./scene/Light";
 import { Renderer } from "./render/Renderer";
 import { Scene } from "./scene/Scene";
@@ -29,17 +30,13 @@ if (draw == null) { throw new Error('Could not get canvas context'); }
 const scene = new Scene();
 const camera = new Camera(scene);
 
-let red = new Material();
-red.diffuse = { r: 1.0, g: 0.2, b: 0.2 };
+let red = Material.builder().withDiffuse(Color.red).build();
 
-let green = new Material();
-green.diffuse = { r: 0.2, g: 0.8, b: 0.2 };
+let green = Material.builder().withDiffuse(Color.green).build();
 
-let mirror = new Material();
-mirror.reflectiveness = 0.8;
+let mirror = Material.builder().withReflectiveness(0.8).build();
 
-let floor = new Material();
-floor.reflectiveness = 0.3;
+let floor = Material.builder().withReflectiveness(0.3).build();
 
 scene.addObject(
     new Sphere(new Vector3(15.0, -2.0, 9.0), 8.0, green)
