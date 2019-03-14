@@ -24,7 +24,7 @@ export class Plane implements Renderable {
         // positive multiplier = hit back face
         // zero multiplier = parallel line, no hit!
 
-        if (angleMultiplier > 0.0) {
+        if (angleMultiplier > -0.00001) {
             return null;
         }
 
@@ -32,6 +32,10 @@ export class Plane implements Renderable {
         let tangentLength = this.normal.dot(planeOffset);
 
         let intersectionDistance = tangentLength / angleMultiplier;
+
+        if (intersectionDistance < -0.00001) {
+            return null;
+        }
 
         let point = ray.origin.add(ray.direction.multiply(intersectionDistance));
         let normal = this.normal;
