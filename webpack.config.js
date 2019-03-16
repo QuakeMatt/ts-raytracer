@@ -4,7 +4,6 @@ module.exports = {
     devtool: 'source-map',
     entry: {
         index: './src/index.ts',
-        worker: './src/worker.ts',
     },
     output: {
         filename: '[name].js',
