@@ -1,5 +1,7 @@
 import { Accumulator } from "./Accumulator";
 import { Camera } from "../scene/Camera";
+import { Fragment } from "./Fragment";
+import { ImageSize } from "./ImageSize";
 import { RayTracer } from "./RayTracer";
 import { Strategy } from "./Strategy";
 import { Viewport } from "./Viewport";
@@ -13,7 +15,17 @@ export class Renderer {
         this.strategy = new RayTracer();
     }
 
-    render(image: ImageData, camera: Camera, viewport: Viewport) {
+    render(imageSize: ImageSize, camera: Camera, viewport: Viewport, fragment: Fragment | null = null) {
+
+        if (fragment == null) {
+            fragment = Fragment.from(imageSize);
+        }
+
+        let frameX = fragment.x;
+        let frameY = fragment.y;
+
+        let frameW = fragment.width;
+        let frameH = fragment.height;
 
         let samplePatterns = [
             { x: 0.5, y: 0.5 },
@@ -26,19 +38,21 @@ export class Renderer {
         let samples = this.samples;
         let samplesInv = 1.0 / samples;
 
-        let imageData = image.data;
+        let imageData = new Uint8ClampedArray(frameW * frameH * 4);
 
-        let imageW = image.width;
-        let imageH = image.height;
+        let imageW = imageSize.width | 0;
+        let imageH = imageSize.height | 0;
 
         let imageWInv = 1.0 / imageW;
         let imageHInv = 1.0 / imageH;
 
         let accumulator = new Accumulator();
 
-        for (let imageY = 0; imageY < imageH; imageY++) {
+        for (let y = 0; y < frameH; y++) {
+            let imageY = y + frameY;
 
-            for (let imageX = 0; imageX < imageW; imageX++) {
+            for (let x = 0; x < frameW; x++) {
+                let imageX = x + frameX;
 
                 accumulator.reset();
 
@@ -57,7 +71,7 @@ export class Renderer {
 
                 }
 
-                let i = (imageX + imageY * imageH) * 4;
+                let i = (x + y * frameW) * 4;
                 imageData[i + 0] = accumulator.r * samplesInv * 255.0;
                 imageData[i + 1] = accumulator.g * samplesInv * 255.0;
                 imageData[i + 2] = accumulator.b * samplesInv * 255.0;
@@ -66,6 +80,8 @@ export class Renderer {
             }
 
         }
+
+        return new ImageData(imageData, frameW, frameH);
 
     }
 

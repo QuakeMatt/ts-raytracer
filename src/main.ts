@@ -63,8 +63,7 @@ export function main() {
     const renderer = new Renderer();
     renderer.samples = RENDER_SAMPLES;
     const lens = new Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, VIEWPORT_DISTANCE);
-    const image = draw.createImageData(CANVAS_WIDTH, CANVAS_HEIGHT);
-    renderer.render(image, camera, lens);
+    let image = renderer.render(canvas, camera, lens);
     draw.putImageData(image, 0, 0);
 
 };
