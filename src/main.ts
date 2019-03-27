@@ -1,5 +1,6 @@
 import { Camera } from "./scene/Camera";
 import { Color } from "./material/Color";
+import { Dispatcher } from "./render/Dispatcher";
 import { Light } from "./scene/Light";
 import { Material } from "./material/Material";
 import { Plane } from "./object/Plane";
@@ -63,7 +64,11 @@ export function main() {
     const renderer = new Renderer();
     renderer.samples = RENDER_SAMPLES;
     const lens = new Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, VIEWPORT_DISTANCE);
-    let image = renderer.render(canvas, camera, lens);
-    draw.putImageData(image, 0, 0);
+    const dispatcher = new Dispatcher(renderer);
+    dispatcher.dispatch(canvas, camera, lens)
+        .onProgress((imageData, fragment) => {
+            draw.putImageData(imageData, fragment.x, fragment.y);
+        })
+        ;
 
 };
