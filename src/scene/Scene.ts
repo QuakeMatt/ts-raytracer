@@ -2,7 +2,9 @@ import { Light } from "./Light";
 import { Ray } from "./Ray";
 import { RayIntersection } from "./RayIntersection";
 import { SceneObject } from "./SceneObject";
+import { serializable } from "../util/Serializer";
 
+@serializable()
 export class Scene {
 
     lights: Light[];

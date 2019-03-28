@@ -3,9 +3,11 @@ import { Camera } from "../scene/Camera";
 import { Fragment } from "./Fragment";
 import { ImageSize } from "./ImageSize";
 import { RayTracer } from "./RayTracer";
+import { serializable } from "../util/Serializer";
 import { Strategy } from "./Strategy";
 import { Viewport } from "./Viewport";
 
+@serializable()
 export class Renderer {
 
     samples: number = 1;

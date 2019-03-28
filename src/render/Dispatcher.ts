@@ -3,8 +3,10 @@ import { Emitter, ProgressFn } from "./Emitter";
 import { Fragment } from "./Fragment";
 import { ImageSize } from "./ImageSize";
 import { Renderer } from "./Renderer";
+import { serializable } from "../util/Serializer";
 import { Viewport } from "./Viewport";
 
+@serializable()
 export class Dispatcher {
 
     readonly renderer: Renderer;

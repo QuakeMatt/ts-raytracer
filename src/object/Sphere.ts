@@ -2,8 +2,10 @@ import { Material } from "../material/Material";
 import { Ray } from "../scene/Ray";
 import { RayIntersection } from "../scene/RayIntersection";
 import { Renderable } from "../scene/Renderable";
+import { serializable } from "../util/Serializer";
 import { Vector3 } from "../math/Vector3";
 
+@serializable()
 export class Sphere implements Renderable {
 
     readonly origin: Vector3;

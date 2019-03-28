@@ -1,7 +1,9 @@
 import { Ray } from "./Ray";
 import { RayIntersection } from "./RayIntersection";
 import { Scene } from "./Scene";
+import { serializable } from "../util/Serializer";
 
+@serializable()
 export class Camera {
 
     scene: Scene;

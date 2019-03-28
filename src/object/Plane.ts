@@ -1,9 +1,11 @@
 import { Ray } from "../scene/Ray";
 import { RayIntersection } from "../scene/RayIntersection";
 import { Renderable } from "../scene/Renderable";
+import { serializable } from "../util/Serializer";
 import { Vector3 } from "../math/Vector3";
 import { Material } from "../material/Material";
 
+@serializable()
 export class Plane implements Renderable {
 
     readonly origin: Vector3;

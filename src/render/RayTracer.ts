@@ -2,7 +2,9 @@ import { Accumulator } from "./Accumulator";
 import { Color } from "../material/Color";
 import { Ray } from "../scene/Ray";
 import { Scene } from "../scene/Scene";
+import { serializable } from "../util/Serializer";
 
+@serializable()
 export class RayTracer {
 
     accumulate(accumulator: Accumulator, ray: Ray, scene: Scene, weight: number = 1.0, limit: number = 10) {

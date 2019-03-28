@@ -1,4 +1,5 @@
 import { Color } from "./Color";
+import { serializable } from "../util/Serializer";
 
 class MaterialBuilder {
 
@@ -21,6 +22,7 @@ class MaterialBuilder {
 
 }
 
+@serializable()
 export class Material {
 
     readonly diffuse: Color;

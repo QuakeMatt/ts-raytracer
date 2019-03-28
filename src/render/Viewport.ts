@@ -1,6 +1,8 @@
 import { Ray } from "../scene/Ray";
+import { serializable } from "../util/Serializer";
 import { Vector3 } from "../math/Vector3";
 
+@serializable()
 export class Viewport {
 
     width: number;

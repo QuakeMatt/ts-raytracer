@@ -1,3 +1,6 @@
+import { serializable } from "../util/Serializer";
+
+@serializable()
 export class Color {
 
     readonly r: number;
