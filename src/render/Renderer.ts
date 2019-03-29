@@ -1,11 +1,14 @@
 import { Accumulator } from "./Accumulator";
 import { Camera } from "../scene/Camera";
+import { Emitter } from "./Emitter";
 import { Fragment } from "./Fragment";
 import { ImageSize } from "./ImageSize";
 import { RayTracer } from "./RayTracer";
 import { serializable } from "../util/Serializer";
 import { Strategy } from "./Strategy";
 import { Viewport } from "./Viewport";
+
+type RenderFn = (fragment: Fragment) => Emitter;
 
 @serializable()
 export class Renderer {
@@ -17,17 +20,7 @@ export class Renderer {
         this.strategy = new RayTracer();
     }
 
-    render(imageSize: ImageSize, camera: Camera, viewport: Viewport, fragment: Fragment | null = null) {
-
-        if (fragment == null) {
-            fragment = Fragment.from(imageSize);
-        }
-
-        let frameX = fragment.x;
-        let frameY = fragment.y;
-
-        let frameW = fragment.width;
-        let frameH = fragment.height;
+    prepare(imageSize: ImageSize, camera: Camera, viewport: Viewport): RenderFn {
 
         let samplePatterns = [
             { x: 0.5, y: 0.5 },
@@ -40,8 +33,6 @@ export class Renderer {
         let samples = this.samples;
         let samplesInv = 1.0 / samples;
 
-        let imageData = new Uint8ClampedArray(frameW * frameH * 4);
-
         let imageW = imageSize.width | 0;
         let imageH = imageSize.height | 0;
 
@@ -50,40 +41,62 @@ export class Renderer {
 
         let accumulator = new Accumulator();
 
-        for (let y = 0; y < frameH; y++) {
-            let imageY = y + frameY;
+        return (fragment: Fragment) => {
+            return new Emitter((onProgress, onComplete) => {
 
-            for (let x = 0; x < frameW; x++) {
-                let imageX = x + frameX;
+                let frameX = fragment.x;
+                let frameY = fragment.y;
 
-                accumulator.reset();
+                let frameW = fragment.width;
+                let frameH = fragment.height;
 
-                for (let sample = 0; sample < samples; sample++) {
+                let imageData = new Uint8ClampedArray(frameW * frameH * 4);
 
-                    let pattern = samplePatterns[sample];
-                    if (pattern == null) {
-                        pattern = samplePatterns[sample] = { x: Math.random(), y: Math.random() };
+                for (let y = 0; y < frameH; y++) {
+                    let imageY = y + frameY;
+
+                    for (let x = 0; x < frameW; x++) {
+                        let imageX = x + frameX;
+
+                        accumulator.reset();
+
+                        for (let sample = 0; sample < samples; sample++) {
+
+                            let pattern = samplePatterns[sample];
+                            if (pattern == null) {
+                                pattern = samplePatterns[sample] = { x: Math.random(), y: Math.random() };
+                            }
+
+                            let viewX = (imageX + pattern.x) * imageWInv;
+                            let viewY = (imageY + pattern.y) * imageHInv;
+
+                            let ray = viewport.getRay(viewX, viewY);
+                            this.strategy.accumulate(accumulator, ray, camera.scene);
+
+                        }
+
+                        let i = (x + y * frameW) * 4;
+                        imageData[i + 0] = accumulator.r * samplesInv * 255.0;
+                        imageData[i + 1] = accumulator.g * samplesInv * 255.0;
+                        imageData[i + 2] = accumulator.b * samplesInv * 255.0;
+                        imageData[i + 3] = 255;
+
                     }
-
-                    let viewX = (imageX + pattern.x) * imageWInv;
-                    let viewY = (imageY + pattern.y) * imageHInv;
-
-                    let ray = viewport.getRay(viewX, viewY);
-                    this.strategy.accumulate(accumulator, ray, camera.scene);
 
                 }
 
-                let i = (x + y * frameW) * 4;
-                imageData[i + 0] = accumulator.r * samplesInv * 255.0;
-                imageData[i + 1] = accumulator.g * samplesInv * 255.0;
-                imageData[i + 2] = accumulator.b * samplesInv * 255.0;
-                imageData[i + 3] = 255;
+                onProgress(new ImageData(imageData, frameW, frameH), fragment);
+                onComplete();
 
-            }
+            });
+        };
 
-        }
+    }
 
-        return new ImageData(imageData, frameW, frameH);
+    render(imageSize: ImageSize, camera: Camera, viewport: Viewport): Emitter {
+
+        let render = this.prepare(imageSize, camera, viewport);
+        return render(Fragment.from(imageSize));
 
     }
 

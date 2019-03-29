@@ -6,6 +6,8 @@ import { Renderer } from "./Renderer";
 import { serializable } from "../util/Serializer";
 import { Viewport } from "./Viewport";
 
+type RenderFn = (fragment: Fragment) => Emitter;
+
 @serializable()
 export class Dispatcher {
 
@@ -15,40 +17,36 @@ export class Dispatcher {
         this.renderer = renderer;
     }
 
-    dispatch(imageSize: ImageSize, camera: Camera, viewport: Viewport): Emitter {
+    prepare(imageSize: ImageSize, camera: Camera, viewport: Viewport): RenderFn {
 
-        const renderer = this.renderer;
+        return (fragment: Fragment) => {
+            return new Emitter((onProgress, onComplete) => {
 
-        function* getIterator(onProgress: ProgressFn) {
+                let render = this.renderer.prepare(imageSize, camera, viewport);
 
-            for (let y = 0; y < imageSize.height; y += 1) {
-                let fragment = new Fragment(0, y, imageSize.width, 1);
-                let imageData = renderer.render(imageSize, camera, viewport, fragment);
-                onProgress(imageData, fragment);
-                yield true;
-            }
+                let y = -1;
+                function next() {
+                    if (++y < fragment.height) {
+                        render(new Fragment(fragment.x, y + fragment.y, fragment.width, 1))
+                            .onProgress(onProgress)
+                            .onComplete(next);
+                    }
+                    else {
+                        onComplete();
+                    }
+                };
 
+                next();
+
+            });
         };
 
-        return new Emitter((onProgress, onComplete) => {
+    }
 
-            let iterator = getIterator(onProgress);
+    render(imageSize: ImageSize, camera: Camera, viewport: Viewport): Emitter {
 
-            function run() {
-                let runUntil = performance.now() + 10.0; // 10ms
-                while (iterator.next().value) {
-                    if (performance.now() > runUntil) {
-                        setTimeout(run, 0);
-                        return;
-                    }
-                }
-
-                setTimeout(onComplete, 0);
-            }
-
-            setTimeout(run, 0);
-
-        });
+        let render = this.prepare(imageSize, camera, viewport);
+        return render(Fragment.from(imageSize));
 
     }
 

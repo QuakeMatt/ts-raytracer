@@ -1,5 +1,9 @@
 import { Fragment } from "./Fragment";
 
+declare function clearImmediate(handle: number): void;
+declare function setImmediate(handler: (...args: any[]) => void): number;
+declare function setImmediate(handler: any, ...args: any[]): number;
+
 export type ProgressFn = (image: ImageData, fragment: Fragment) => void;
 export type CompleteFn = () => void;
 
@@ -21,7 +25,9 @@ export class Emitter {
             this._onComplete.forEach(cb => cb());
         };
 
-        fn(onProgress, onComplete);
+        setImmediate(function () {
+            fn(onProgress, onComplete);
+        });
 
     }
 

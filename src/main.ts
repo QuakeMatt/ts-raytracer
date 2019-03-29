@@ -65,7 +65,7 @@ export function main() {
     renderer.samples = RENDER_SAMPLES;
     const lens = new Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, VIEWPORT_DISTANCE);
     const dispatcher = new Dispatcher(renderer);
-    dispatcher.dispatch(canvas, camera, lens)
+    dispatcher.render(canvas, camera, lens)
         .onProgress((imageData, fragment) => {
             draw.putImageData(imageData, fragment.x, fragment.y);
         })
