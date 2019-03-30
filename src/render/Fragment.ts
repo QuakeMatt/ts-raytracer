@@ -15,6 +15,15 @@ export class Fragment {
         this.height = height | 0;
     }
 
+    intersection(x: number, y: number, width: number, height: number) {
+        return new Fragment(
+            Math.max(x, this.x),
+            Math.max(y, this.x),
+            Math.min(x + width, this.x + this.width) - x,
+            Math.min(y + height, this.y + this.height) - y,
+        );
+    }
+
     static from(rect: { x?: number, y?: number, width: number, height: number }) {
         return new Fragment(
             rect.x || 0,
