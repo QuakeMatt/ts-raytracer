@@ -1,10 +1,9 @@
 import { Camera } from "./scene/Camera";
 import { Color } from "./material/Color";
-import { Dispatcher } from "./render/Dispatcher";
+import { IterativeRenderer } from "./render/renderer/IterativeRenderer";
 import { Light } from "./scene/Light";
 import { Material } from "./material/Material";
 import { Plane } from "./object/Plane";
-import { Renderer } from "./render/Renderer";
 import { Scene } from "./scene/Scene";
 import { Sphere } from "./object/Sphere";
 import { Vector3 } from "./math/Vector3";
@@ -62,18 +61,11 @@ export function main() {
     );
 
     const startedAt = performance.now();
-    const renderer = new Renderer();
-    renderer.samples = RENDER_SAMPLES;
     const lens = new Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, VIEWPORT_DISTANCE);
-    const dispatcher = new Dispatcher(renderer);
-    dispatcher.render(canvas, camera, lens)
-        .onProgress((imageData, fragment) => {
-            draw.putImageData(imageData, fragment.x, fragment.y);
-        })
-        .onComplete(() => {
-            let duration = performance.now() - startedAt;
-            console.log('Took ' + duration.toFixed() + 'ms');
-        })
-        ;
+    const renderer = new IterativeRenderer({samples: RENDER_SAMPLES});
+    renderer.render(canvas, camera, lens).toTarget(draw).onComplete(() => {
+        let duration = performance.now() - startedAt;
+        console.log('Took ' + duration.toFixed() + 'ms');
+    });
 
 };

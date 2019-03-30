@@ -4,15 +4,15 @@ declare function clearImmediate(handle: number): void;
 declare function setImmediate(handler: (...args: any[]) => void): number;
 declare function setImmediate(handler: any, ...args: any[]): number;
 
-export type ProgressFn = (image: ImageData, fragment: Fragment) => void;
-export type CompleteFn = () => void;
+export type ProgressFunction = (imageData: ImageData, fragment: Fragment) => void;
+export type CompleteFunction = () => void;
 
 export class Emitter {
 
-    private readonly _onProgress: Array<ProgressFn>;
-    private readonly _onComplete: Array<CompleteFn>;
+    private readonly _onProgress: Array<ProgressFunction>;
+    private readonly _onComplete: Array<CompleteFunction>;
 
-    constructor(fn: (onProgress: ProgressFn, onDone: CompleteFn) => void) {
+    constructor(fn: (onProgress: ProgressFunction, onComplete: CompleteFunction) => void) {
 
         this._onProgress = [];
         this._onComplete = [];
@@ -31,14 +31,20 @@ export class Emitter {
 
     }
 
-    onProgress(cb: ProgressFn) {
+    onProgress(cb: ProgressFunction): Emitter {
         this._onProgress.push(cb);
         return this;
     }
 
-    onComplete(cb: CompleteFn) {
+    onComplete(cb: CompleteFunction): Emitter {
         this._onComplete.push(cb);
         return this;
+    }
+
+    toTarget(target: CanvasRenderingContext2D): Emitter {
+        return this.onProgress(function (imageData, fragment) {
+            target.putImageData(imageData, fragment.x, fragment.y);
+        });
     }
 
 }

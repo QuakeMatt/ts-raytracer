@@ -1,26 +1,31 @@
-import { Accumulator } from "./Accumulator";
-import { Camera } from "../scene/Camera";
-import { Emitter } from "./Emitter";
-import { Fragment } from "./Fragment";
-import { ImageSize } from "./ImageSize";
-import { RayTracer } from "./RayTracer";
-import { serializable } from "../util/Serializer";
-import { Strategy } from "./Strategy";
-import { Viewport } from "./Viewport";
+import { Accumulator } from "../Accumulator";
+import { Camera } from "../../scene/Camera";
+import { Emitter } from "../Emitter";
+import { Fragment } from "../Fragment";
+import { RayTracer, RayTracerOptions } from "../strategy/RayTracer";
+import { Renderer, RenderFunction } from "./Renderer";
+import { RenderStrategy, isRenderStrategy } from "../strategy/RenderStrategy";
+import { serializable } from "../../util/Serializer";
+import { Surface } from "../Surface";
+import { Viewport } from "../Viewport";
 
-type RenderFn = (fragment: Fragment) => Emitter;
+export interface FragmentRendererOptions {
+    samples?: number;
+    strategy?: RenderStrategy | RayTracerOptions;
+}
 
 @serializable()
-export class Renderer {
+export class FragmentRenderer implements Renderer {
 
-    samples: number = 1;
-    strategy: Strategy;
+    readonly samples: number;
+    readonly strategy: RenderStrategy;
 
-    constructor() {
-        this.strategy = new RayTracer();
+    constructor(options: FragmentRendererOptions = {}) {
+        this.samples = (options.samples != null) ? (options.samples | 0) : 1;
+        this.strategy = isRenderStrategy(options.strategy) ? options.strategy : new RayTracer(options.strategy);
     }
 
-    prepare(imageSize: ImageSize, camera: Camera, viewport: Viewport): RenderFn {
+    prepare(surface: Surface, camera: Camera, viewport: Viewport): RenderFunction {
 
         let samplePatterns = [
             { x: 0.5, y: 0.5 },
@@ -33,8 +38,8 @@ export class Renderer {
         let samples = this.samples;
         let samplesInv = 1.0 / samples;
 
-        let imageW = imageSize.width | 0;
-        let imageH = imageSize.height | 0;
+        let imageW = surface.width | 0;
+        let imageH = surface.height | 0;
 
         let imageWInv = 1.0 / imageW;
         let imageHInv = 1.0 / imageH;
@@ -50,7 +55,7 @@ export class Renderer {
                 let frameW = fragment.width;
                 let frameH = fragment.height;
 
-                let imageData = new Uint8ClampedArray(frameW * frameH * 4);
+                let imageBuffer = new Uint8ClampedArray(frameW * frameH * 4);
 
                 for (let y = 0; y < frameH; y++) {
                     let imageY = y + frameY;
@@ -76,16 +81,16 @@ export class Renderer {
                         }
 
                         let i = (x + y * frameW) * 4;
-                        imageData[i + 0] = accumulator.r * samplesInv * 255.0;
-                        imageData[i + 1] = accumulator.g * samplesInv * 255.0;
-                        imageData[i + 2] = accumulator.b * samplesInv * 255.0;
-                        imageData[i + 3] = 255;
+                        imageBuffer[i + 0] = accumulator.r * samplesInv * 255.0;
+                        imageBuffer[i + 1] = accumulator.g * samplesInv * 255.0;
+                        imageBuffer[i + 2] = accumulator.b * samplesInv * 255.0;
+                        imageBuffer[i + 3] = 255;
 
                     }
 
                 }
 
-                onProgress(new ImageData(imageData, frameW, frameH), fragment);
+                onProgress(new ImageData(imageBuffer, frameW, frameH), fragment);
                 onComplete();
 
             });
@@ -93,10 +98,10 @@ export class Renderer {
 
     }
 
-    render(imageSize: ImageSize, camera: Camera, viewport: Viewport): Emitter {
+    render(surface: Surface, camera: Camera, viewport: Viewport): Emitter {
 
-        let render = this.prepare(imageSize, camera, viewport);
-        return render(Fragment.from(imageSize));
+        let render = this.prepare(surface, camera, viewport);
+        return render(Fragment.from(surface));
 
     }
 

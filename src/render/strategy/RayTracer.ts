@@ -1,11 +1,18 @@
-import { Accumulator } from "./Accumulator";
-import { Color } from "../material/Color";
-import { Ray } from "../scene/Ray";
-import { Scene } from "../scene/Scene";
-import { serializable } from "../util/Serializer";
+import { Accumulator } from "../Accumulator";
+import { Color } from "../../material/Color";
+import { Ray } from "../../scene/Ray";
+import { RenderStrategy } from "./RenderStrategy";
+import { Scene } from "../../scene/Scene";
+import { serializable } from "../../util/Serializer";
+
+export interface RayTracerOptions {
+}
 
 @serializable()
-export class RayTracer {
+export class RayTracer implements RenderStrategy {
+
+    constructor(options: RayTracerOptions = {}) {
+    }
 
     accumulate(accumulator: Accumulator, ray: Ray, scene: Scene, weight: number = 1.0, limit: number = 10) {
 
