@@ -61,6 +61,7 @@ export function main() {
         new Light(new Vector3(-60.0, 80.0, -40.0))
     );
 
+    const startedAt = performance.now();
     const renderer = new Renderer();
     renderer.samples = RENDER_SAMPLES;
     const lens = new Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, VIEWPORT_DISTANCE);
@@ -68,6 +69,10 @@ export function main() {
     dispatcher.render(canvas, camera, lens)
         .onProgress((imageData, fragment) => {
             draw.putImageData(imageData, fragment.x, fragment.y);
+        })
+        .onComplete(() => {
+            let duration = performance.now() - startedAt;
+            console.log('Took ' + duration.toFixed() + 'ms');
         })
         ;
 
