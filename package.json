@@ -16,9 +16,9 @@
   "private": true,
   "devDependencies": {
     "setimmediate": "^1.0.5",
-    "ts-loader": "^5.3.3",
-    "typescript": "^3.3.3333",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3"
+    "ts-loader": "^5.4.5",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
   }
 }
