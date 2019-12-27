@@ -8,6 +8,7 @@ import { Scene } from "./scene/Scene";
 import { Sphere } from "./object/Sphere";
 import { Vector3 } from "./math/Vector3";
 import { Viewport } from "./render/Viewport";
+import { WorkerRenderer } from "./worker/WorkerRenderer";
 
 export function main() {
 
@@ -62,7 +63,8 @@ export function main() {
 
     const startedAt = performance.now();
     const lens = new Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, VIEWPORT_DISTANCE);
-    const renderer = new IterativeRenderer({samples: RENDER_SAMPLES});
+    // const renderer = new IterativeRenderer({ samples: RENDER_SAMPLES });
+    const renderer = new WorkerRenderer({ samples: RENDER_SAMPLES, workers: 4 });
     renderer.render(canvas, camera, lens).toTarget(draw).onComplete(() => {
         let duration = performance.now() - startedAt;
         console.log('Took ' + duration.toFixed() + 'ms');

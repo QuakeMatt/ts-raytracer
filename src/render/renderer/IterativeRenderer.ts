@@ -1,7 +1,7 @@
 import { Camera } from "../../scene/Camera";
 import { Emitter, ProgressFunction } from "../Emitter";
 import { Fragment } from "../Fragment";
-import { FragmentRendererOptions, FragmentRenderer } from "./FragmentRenderer";
+import { FragmentRenderer, FragmentRendererOptions } from "./FragmentRenderer";
 import { Renderer, RenderFunction, isRenderer } from "./Renderer";
 import { serializable } from "../../util/Serializer";
 import { Surface } from "../Surface";

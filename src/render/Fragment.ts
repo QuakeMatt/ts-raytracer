@@ -18,7 +18,7 @@ export class Fragment {
     intersection(x: number, y: number, width: number, height: number) {
         return new Fragment(
             Math.max(x, this.x),
-            Math.max(y, this.x),
+            Math.max(y, this.y),
             Math.min(x + width, this.x + this.width) - x,
             Math.min(y + height, this.y + this.height) - y,
         );
